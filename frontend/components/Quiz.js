@@ -1,24 +1,29 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { setQuiz } from '../state/action-creators'
 
-export default function Quiz(props) {
+function Quiz (props) {
+
+  const { newQuestion, newTrueAnswer, newFalseAnswer } = props
+
   return (
     <div id="wrapper">
       {
         // quiz already in state? Let's use that, otherwise render "Loading next quiz..."
-        true ? (
+        newQuestion && newTrueAnswer && newFalseAnswer ? (
           <>
-            <h2>What is a closure?</h2>
+            <h2>{newQuestion}</h2>
 
             <div id="quizAnswers">
               <div className="answer selected">
-                A function
+                {newTrueAnswer}
                 <button>
                   SELECTED
                 </button>
               </div>
 
               <div className="answer">
-                An elephant
+                {newFalseAnswer}
                 <button>
                   Select
                 </button>
@@ -32,3 +37,13 @@ export default function Quiz(props) {
     </div>
   )
 }
+
+const mapStateToProps = state => {
+  return {
+    newQuestion: state.form.newQuestion,
+    newTrueAnswer: state.form.newTrueAnswer,
+    newFalseAnswer: state.form.newFalseAnswer
+  }
+}
+
+export default connect(mapStateToProps, { setQuiz })(Quiz)
