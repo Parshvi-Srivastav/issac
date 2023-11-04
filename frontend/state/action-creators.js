@@ -2,12 +2,12 @@
 import { MOVE_CLOCKWISE, SET_QUIZ_INTO_STATE, SET_SELECTED_ANSWER, SET_INFO_MESSAGE, INPUT_QUESTION_CHANGE, TRUE_QUESTION_CHANGE, FALSE_QUESTION_CHANGE, MOVE_COUNTERCLOCKWISE } from "./action-types"
 
 
-export function moveClockwise(positions = 1) {
-  return { type: MOVE_CLOCKWISE, payload: positions }
+export function moveClockwise() {
+  return { type: MOVE_CLOCKWISE, payload: 1}
 }
 
-export function moveCounterClockwise(positions = 1) { 
-  return { type: MOVE_COUNTERCLOCKWISE, payload: positions}
+export function moveCounterClockwise() { 
+  return { type: MOVE_COUNTERCLOCKWISE, payload: 1}
 }
 
 export function setQuiz(quizData) {
