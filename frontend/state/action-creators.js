@@ -95,6 +95,7 @@ export function postAnswer(answer) {
     axios
       .post("http://localhost:9000/api/quiz/answer", { answer })
       .then((response) => {
+        console.log(response.data);
         dispatch({ type: POST_ANSWER_SUCCESS, payload: response.data });
         // Example usage of SET_SELECTED_ANSWER action type
         dispatch({ type: SET_SELECTED_ANSWER, payload: answer });

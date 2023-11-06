@@ -44,7 +44,12 @@ export function Form(props) {
     })
     .then((response) => {
       // Handle the response
-      console.log(response);
+      // console.log(response.data.answers[1].correct);
+      return {
+        newQuestion: response.data.question, 
+        newTrueAnswer: response.data.answers[0].correct,
+        newFalseAnswer: response.data.answers[1].correct
+      }
     })
     .catch((error) => {
       // Handle errors
