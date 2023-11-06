@@ -25,21 +25,35 @@ function quiz(state = initialQuizState, action) {
     case SET_QUIZ_INTO_STATE:
       return {
         ...state,
-        quizData: action.payload
+        newQuestion: action.payload.newQuestion,
+        newTrueAnswer: action.payload.newTrueAnswer,
+        newFalseAnswer: action.payload.newFalseAnswer,
       };
     default:
       return state;
   }
 }
 
-const initialSelectedAnswerState = null
+const initialSelectedAnswerState = null;
+
 function selectedAnswer(state = initialSelectedAnswerState, action) {
-  return state
+  switch (action.type) {
+    case SET_SELECTED_ANSWER:
+      return action.payload;
+    default:
+      return state;
+  }
 }
 
-const initialMessageState = ''
+const initialMessageState = '';
+
 function infoMessage(state = initialMessageState, action) {
-  return state
+  switch (action.type) {
+    case SET_INFO_MESSAGE:
+      return action.payload;
+    default:
+      return state;
+  }
 }
 
 // Reducer
