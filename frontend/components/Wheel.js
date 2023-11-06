@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { moveClockwise, moveCounterClockwise } from '../state/action-creators'
 
 function Wheel (props) {
-  console.log(props.initialWheelState);
   const clockWiseClick = () => {
     props.moveClockwise(1);
   };

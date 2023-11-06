@@ -1,6 +1,6 @@
 // ❗ You don't need to add extra reducers to achieve MVP
 import { combineReducers } from 'redux'
-import { MOVE_CLOCKWISE, SET_QUIZ_INTO_STATE, SET_INFO_MESSAGE, SET_SELECTED_ANSWER, INPUT_QUESTION_CHANGE, TRUE_QUESTION_CHANGE, FALSE_QUESTION_CHANGE, MOVE_COUNTERCLOCKWISE } from './action-types'
+import { MOVE_CLOCKWISE, SET_QUIZ_INTO_STATE, SET_INFO_MESSAGE, SET_SELECTED_ANSWER, INPUT_QUESTION_CHANGE, TRUE_QUESTION_CHANGE, FALSE_QUESTION_CHANGE, MOVE_COUNTERCLOCKWISE, RESET_FORM } from './action-types'
 
 const initialWheelState = 0
 function wheel(state = initialWheelState, action) {
@@ -15,7 +15,11 @@ function wheel(state = initialWheelState, action) {
   }
 }
 
-const initialQuizState = null
+const initialQuizState = {
+  newQuestion: '',
+  newTrueAnswer: '',
+  newFalseAnswer: '',
+};
 function quiz(state = initialQuizState, action) {
   switch (action.type) {
     case SET_QUIZ_INTO_STATE:
@@ -38,27 +42,37 @@ function infoMessage(state = initialMessageState, action) {
   return state
 }
 
+// Reducer
 const initialFormState = {
   newQuestion: '',
   newTrueAnswer: '',
   newFalseAnswer: '',
-}
+};
+
 function form(state = initialFormState, action) {
   switch (action.type) {
     case INPUT_QUESTION_CHANGE:
       return {
         ...state,
-        newQuestion: action.payload
+        newQuestion: action.payload.newQuestion,
       };
     case TRUE_QUESTION_CHANGE:
       return {
         ...state,
-        newTrueAnswer: action.payload
-      }
+        newTrueAnswer: action.payload.newTrueAnswer,
+      };
     case FALSE_QUESTION_CHANGE:
       return {
         ...state,
-        newFalseAnswer: action.payload
+        newFalseAnswer: action.payload.newFalseAnswer,
+      };
+    case RESET_FORM:
+      console.log(action.type);
+      return {
+        ...state,
+        newQuestion: action.payload.newQuestion,
+        newTrueAnswer: action.payload.newTrueAnswer,
+        newFalseAnswer: action.payload.newFalseAnswer,
       }
     default:
       return state;
