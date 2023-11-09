@@ -1,41 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { setQuiz, postAnswer, fetchQuiz } from '../state/action-creators';
+import { setQuiz, postAnswer, fetchQuiz, postQuiz } from '../state/action-creators';
 
 function Quiz(props) {
-  const { newQuestion, newTrueAnswer, newFalseAnswer, setQuiz, postAnswer, fetchQuiz } = props;
-
-  const handleAnswerSelection = (selectedAnswer) => {
-    // Dispatch the postAnswer action to send the selected answer to the server
-    postAnswer(selectedAnswer);
-  };
-
-  const handleQuizSubmission = () => {
-    // Dispatch the setQuiz action to reset the quiz state
-    setQuiz();
-    // Fetch a new quiz after submitting the answer
-    fetchQuiz();
-  };
+  const { newFalseAnswer, newQuestion, newTrueAnswer, initialQuizState } = props;
+  useEffect(() => {
+    !initialQuizState && fetchQuiz()
+  }, [])
 
   return (
     <div id="wrapper">
-      {fetchQuiz() ? (
+      {newQuestion && newFalseAnswer && newTrueAnswer ? (
         <>
           <h2>{newQuestion}</h2>
 
           <div id="quizAnswers">
-            <div className="answer selected" onClick={() => handleAnswerSelection(newTrueAnswer)}>
+            <div className="answer ">
               {newTrueAnswer}
-              <button>SELECTED</button>
+              <button>Select</button>
             </div>
 
-            <div className="answer" onClick={() => handleAnswerSelection(newFalseAnswer)}>
+            <div className="answer">
               {newFalseAnswer}
               <button>Select</button>
             </div>
           </div>
 
-          <button id="submitAnswerBtn" onClick={handleQuizSubmission}>
+          <button id="submitAnswerBtn">
             Submit answer
           </button>
         </>
@@ -46,12 +37,13 @@ function Quiz(props) {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     newQuestion: state.form.newQuestion,
-    newTrueAnswer: state.form.newTrueAnswer,
     newFalseAnswer: state.form.newFalseAnswer,
-  };
-};
+    newTrueAnswer: state.form.newTrueAnswer,
+    initialQuizState: state.quiz 
+  }
+}
 
-export default connect(mapStateToProps, { setQuiz, postAnswer, fetchQuiz })(Quiz);
+export default connect(mapStateToProps, { setQuiz, postAnswer, fetchQuiz, postQuiz })(Quiz);

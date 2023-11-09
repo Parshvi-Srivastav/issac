@@ -6,10 +6,11 @@ import {
   trueQuestionChange,
   falseQuestionChange,
   resetForm,
+  setMessage,
+  setQuiz,
 } from "../state/action-creators";
 
 export function Form(props) {
-
   const questionInputChange = (evt) => {
     props.inputQuestionChange({ newQuestion: evt.target.value });
   };
@@ -22,43 +23,34 @@ export function Form(props) {
     props.falseQuestionChange({ newFalseAnswer: evt.target.value });
   };
 
-  console.log("Request Payload:", {
-    question_text: props.newQuestion,
-    true_answer_text: props.newTrueAnswer,
-    false_answer_text: props.newFalseAnswer,
-  });
-
   const onSubmit = (evt) => {
-  evt.preventDefault();
-  console.log("Payload Data:", {
-    question_text: props.newQuestion,
-    true_answer_text: props.newTrueAnswer,
-    false_answer_text: props.newFalseAnswer,
-  });
+    evt.preventDefault();
+    // console.log("Payload Data:", {
+    //   question_text: props.newQuestion,
+    //   true_answer_text: props.newTrueAnswer,
+    //   false_answer_text: props.newFalseAnswer,
+    // });
 
-  axios
-    .post("http://localhost:9000/api/quiz/new", {
-      question_text: props.newQuestion,
-      true_answer_text: props.newTrueAnswer,
-      false_answer_text: props.newFalseAnswer,
-    })
-    .then((response) => {
-      // Handle the response
-      // console.log(response.data.answers[1].correct);
-      return {
-        newQuestion: response.data.question, 
-        newTrueAnswer: response.data.answers[0].correct,
-        newFalseAnswer: response.data.answers[1].correct
-      }
-    })
-    .catch((error) => {
-      // Handle errors
-      console.log(error);
-    });
-
-  props.resetForm();
-};
-
+    axios
+      .post("http://localhost:9000/api/quiz/new", {
+        question_text: props.newQuestion,
+        true_answer_text: props.newTrueAnswer,
+        false_answer_text: props.newFalseAnswer,
+      })
+      .then((response) => {
+        // Handle the response
+        setQuiz(response.data);
+        setMessage(
+          `Congrats: "${response.data.question}" is a great question!`
+        );
+        // console.log(response.data.question);
+      })
+      .catch((error) => {
+        // Handle errors
+        setMessage(error.response.data.message);
+      });
+    props.resetForm();
+  };
 
   return (
     <form id="form" onSubmit={onSubmit}>
@@ -84,9 +76,7 @@ export function Form(props) {
         id="newFalseAnswer"
         placeholder="Enter false answer"
       />
-      <button id="submitNewQuizBtn">
-        Submit new quiz
-      </button>
+      <button id="submitNewQuizBtn">Submit new quiz</button>
     </form>
   );
 }
@@ -99,10 +89,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-
 export default connect(mapStateToProps, {
   inputQuestionChange,
   trueQuestionChange,
   falseQuestionChange,
   resetForm,
+  setMessage,
+  setQuiz,
 })(Form);

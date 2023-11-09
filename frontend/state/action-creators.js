@@ -10,15 +10,6 @@ import {
   FALSE_QUESTION_CHANGE,
   MOVE_COUNTERCLOCKWISE,
   RESET_FORM,
-  FETCH_QUIZ_REQUEST,
-  FETCH_QUIZ_SUCCESS,
-  FETCH_QUIZ_FAILURE,
-  POST_ANSWER_REQUEST,
-  POST_ANSWER_SUCCESS,
-  POST_ANSWER_FAILURE,
-  POST_QUIZ_REQUEST,
-  POST_QUIZ_SUCCESS,
-  POST_QUIZ_FAILURE,
 } from "./action-types";
 
 export function moveClockwise() {
@@ -66,63 +57,51 @@ export function resetForm() {
 }
 
 // ❗ Async action creators
+
 export function fetchQuiz() {
   return function (dispatch) {
     // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
-    // On successful GET:
-    // - Dispatch an action to send the obtained quiz to its state
-    dispatch({ type: FETCH_QUIZ_REQUEST });
+    dispatch({type: SET_QUIZ_INTO_STATE, payload: "Loading next quiz..."});
 
     axios
       .get("http://localhost:9000/api/quiz/next")
-      .then((response) => {
-        dispatch({ type: FETCH_QUIZ_SUCCESS, payload: response.data });
+      .then((res) => {
+        // On successful GET, dispatch the obtained quiz to its state
+        dispatch(
+          setMessage(`Congrats: "${res.data.question}" is a great question`)
+        );
+        dispatch(setQuiz(res.data));
       })
       .catch((error) => {
-        dispatch({ type: FETCH_QUIZ_FAILURE, payload: error });
+        // Handle error if the next quiz couldn't be fetched
+        dispatch(setMessage(error.response.data.message));
       });
   };
 }
-export function postAnswer(answer) {
+export function postAnswer() {
   return function (dispatch) {
     // On successful POST:
     // - Dispatch an action to reset the selected answer state
     // - Dispatch an action to set the server message to state
     // - Dispatch the fetching of the next quiz
-    dispatch({ type: POST_ANSWER_REQUEST });
-
-    // Perform the API call to post the answer
-    axios
-      .post("http://localhost:9000/api/quiz/answer", { answer })
-      .then((response) => {
-        console.log(response.data);
-        dispatch({ type: POST_ANSWER_SUCCESS, payload: response.data });
-        // Example usage of SET_SELECTED_ANSWER action type
-        dispatch({ type: SET_SELECTED_ANSWER, payload: answer });
-      })
-      .catch((error) => {
-        dispatch({ type: POST_ANSWER_FAILURE, payload: error });
-      });
+    axios.post('http://localhost:9000/api/quiz/answer', dispatch(selectAnswer(null)))
+    .then(res => {
+      dispatch(selectAnswer(null))
+      dispatch(setMessage("Nice job! That was the correct answer"))
+      dispatch(fetchQuiz())
+    })
+    .catch(err => {
+      setMessage(err)
+    })
   };
 }
-export function postQuiz(quizData) {
+export function postQuiz() {
   return function (dispatch) {
     // On successful POST:
-    // - Dispatch the correct message to the the appropriate state
+    // - Dispatch the correct message to the appropriate state
     // - Dispatch the resetting of the form
-    dispatch({ type: POST_QUIZ_REQUEST });
-
-    // Perform the API call to post the quiz
-    axios
-      .post("http://localhost:9000/api/quiz/new", quizData)
-      .then((response) => {
-        dispatch({ type: POST_QUIZ_SUCCESS, payload: response.data });
-        // Example usage of SET_INFO_MESSAGE action type
-        dispatch({ type: SET_INFO_MESSAGE, payload: "Quiz submitted successfully!" });
-      })
-      .catch((error) => {
-        dispatch({ type: POST_QUIZ_FAILURE, payload: error });
-      });
+    axios.post('http://localhost:9000/api/quiz/new', )
   };
 }
+
 // ❗ On promise rejections, use log statements or breakpoints, and put an appropriate error message in state
