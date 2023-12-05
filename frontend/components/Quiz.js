@@ -4,9 +4,11 @@ import { setQuiz, postAnswer, fetchQuiz, postQuiz } from '../state/action-creato
 
 function Quiz(props) {
   const { newFalseAnswer, newQuestion, newTrueAnswer, initialQuizState } = props;
+  console.log(initialQuizState);
   useEffect(() => {
-    !initialQuizState && fetchQuiz()
+    fetchQuiz()
   }, [])
+
 
   return (
     <div id="wrapper">

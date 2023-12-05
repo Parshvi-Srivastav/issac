@@ -39,6 +39,7 @@ export function Form(props) {
       })
       .then((response) => {
         // Handle the response
+        console.log(response.data);
         setQuiz(response.data);
         setMessage(
           `Congrats: "${response.data.question}" is a great question!`
