@@ -1,51 +1,47 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { setQuiz, postAnswer, fetchQuiz, postQuiz } from '../state/action-creators';
-
+import * as actionCreators from "../state/action-creators";
 function Quiz(props) {
-  const { newFalseAnswer, newQuestion, newTrueAnswer, initialQuizState } = props;
-  console.log(initialQuizState);
+  const { fetchQuiz, quiz } = props;
   useEffect(() => {
-    fetchQuiz()
+   !quiz&& fetchQuiz()
   }, [])
 
 
   return (
     <div id="wrapper">
-      {newQuestion && newFalseAnswer && newTrueAnswer ? (
+      {quiz ? (
         <>
-          <h2>{newQuestion}</h2>
+          <h2>{quiz.question}</h2>
 
           <div id="quizAnswers">
             <div className="answer ">
-              {newTrueAnswer}
+              {quiz.answers[0].text}
               <button>Select</button>
             </div>
 
             <div className="answer">
-              {newFalseAnswer}
+              {quiz.answers[1].text}
               <button>Select</button>
             </div>
           </div>
 
-          <button id="submitAnswerBtn">
-            Submit answer
-          </button>
+          <button id="submitAnswerBtn">Submit answer</button>
         </>
       ) : (
-        'Loading next quiz...'
+        "Loading next quiz..."
       )}
     </div>
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    newQuestion: state.form.newQuestion,
-    newFalseAnswer: state.form.newFalseAnswer,
-    newTrueAnswer: state.form.newTrueAnswer,
-    initialQuizState: state.quiz 
-  }
-}
+// const mapStateToProps = state => {
+//   return {
+//     newQuestion: state.form.newQuestion,
+//     newFalseAnswer: state.form.newFalseAnswer,
+//     newTrueAnswer: state.form.newTrueAnswer,
+//     initialQuizState: state.quiz 
+//   }
+// }
 
-export default connect(mapStateToProps, { setQuiz, postAnswer, fetchQuiz, postQuiz })(Quiz);
+export default connect((st) => st, actionCreators)(Quiz);
